@@ -32,7 +32,7 @@ El trabajo se basa en hacer una escena con iluminación. En esta práctica aprov
 Las mayores decisiones tomadas y las que mas pruebas requirieron fue la colocación de los planetas y la iluminación.
 
 
-* Método que permite el movimiento de la cámara en modo "primera persona"
+* Metodos que manejan tanto la cámara como la iluminación.
   ```
   void setCamera() {
     if (pause) camera(width/2.0, height/2.0, (height/2.0) / tan(PI*30.0 / 180.0), width/2.0, height/2.0, 0, 0, 1, 0);
