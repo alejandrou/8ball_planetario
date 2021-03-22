@@ -34,62 +34,43 @@ Las mayores decisiones tomadas y las que mas pruebas requirieron fue la colocaci
 
 * Método que permite el movimiento de la cámara en modo "primera persona"
   ```
-  void updateShipCamera(){
-    if (wPressed) {
-      posicion.add(PVector.mult(direccion, 5));
-    }
-    if (sPressed) {
-      posicion.sub(PVector.mult(direccion, 5));
-    }  
-    if (aPressed) {
-      PVector producto = new PVector();
-      PVector.cross(direccion, vertical, producto);
-      producto.normalize();
-      posicion.sub(PVector.mult(producto, 5));
-    }
-     
-    if (dPressed) {
-      PVector producto = new PVector();
-      PVector.cross(direccion, vertical, producto);
-      producto.normalize();
-      posicion.add(PVector.mult(producto, 5));
-    }
-    if(upPressed){
-      y -= 1;
-      y = y % 360;
-    }
-    if(downPressed){
-      y += 1;
-      y = y % 360;
-    }
-    if(leftPressed){
-      x -= 1;
-      x = x % 360;
-    }
-    if(rigthPressed){
-      x += 1;
-      x = x % 360;
-    }
-    PVector dir = new PVector(
-       cos(radians(x)) * cos(radians(y)),
-       sin(radians(y)),
-       sin(radians(x)) * cos(radians(y))
-    );
-    dir.normalize();
-    direccion = dir;
+  void setCamera() {
+    if (pause) camera(width/2.0, height/2.0, (height/2.0) / tan(PI*30.0 / 180.0), width/2.0, height/2.0, 0, 0, 1, 0);
+    else camera(posCam.x, posCam.y, posCam.z, x, height/2.0, 75*8+20, 0, 1, 0);
   }
-  if(mode){
-     updateShipCamera();
-     PVector dir = PVector.add(posicion,direccion);
-     camera(posicion.x,posicion.y,posicion.z,
-           dir.x,dir.y,dir.z,
-           vertical.x,vertical.y,vertical.z);
-    pushMatrix();
-     translate(posicion.x,posicion.y,posicion.z);
-     popMatrix();
-   }else{
-     camera();
-   }
+
+  void lightControl() {
+    if (lightUp) light = (light < 5000)? light+40 : 5000;
+    if (lightDown) light = (light > -5000)? light-40 : -5000;
+  }
+
+  void setLight() {
+    float val = (float)light/(float)width*float(255);
+    ambientLight((int)val, val, val);
+    pointLight(204, 153, 0, light, height/2, 400);
+  }
+
+  void cameraControl() {
+    if (rotateRight) {
+      camMov--;
+      camMov %= 360;
+    }
+    if (rotateLeft) {
+      camMov++;
+      camMov %= 360;
+    }
+    if (zoomOut) {
+      if (posCam.sub(new PVector(0, 0, 5)).z<-width)posCam.z=width;
+      posCam.sub(new PVector(0, 0, 5));
+    }
+    if (zoomIn) {
+      if (posCam.add(new PVector(0, 0, 5)).z>width)posCam.z=-width;
+      posCam.add(new PVector(0, 0, 5));
+    }
+
+    x = (width/2.0)*(1 + sin(radians(camMov)));
+    z = -(width/2.0)*(1 + cos(radians(camMov)));
+  }
 
  <p align="center"><img src="images/escena.png" alt="Escena" width="500" height="500"></br>Pantalla final</p>
  
@@ -111,7 +92,6 @@ Para ayudarme en la realización de esta aplicación usé la API que te proporci
 Añado un GIF con el resultado de la aplicación final con el sistema planetario.
 
 Al ir un poco lento de FPS para realizar el gif usé el programa [Gyazo](https://gyazo.com/) para que sea más visible el uso de la cámara. Se puede ver en el link a continuación
-* [Vídeo de la ejecución final](https://gyazo.com/ae2ee7590f909880e4072de8f24d075c).
+* [Vídeo de la ejecución final](https://gyazo.com/4d2061601668795e016d7e162f0bbc1e).
 
-  * Resultado
-  <p align="center"><img src="images/sistema_solar.gif" alt="Figura" width="500" height="500"></br>Gif resultado final</p>
+ 
